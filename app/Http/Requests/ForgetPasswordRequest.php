@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Traits\ApiErrorResponse;
+
+class ForgetPasswordRequest extends FormRequest
+{
+    use ApiErrorResponse;
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'otp' => 'required',
+            'new_password' => 'required|string|min:4|max:10',
+            'confirm_password' => 'required|string|same:new_password',
+            'email' => 'required|email|exists:users',
+        ];
+    }
+}
