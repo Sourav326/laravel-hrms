@@ -15,8 +15,13 @@ class EnsureIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth('sanctum')->user()->role == 'admin') {
-            return $next($request);
+        $user = auth('sanctum')->user();
+        foreach ($user->roles()->get() as $role)
+        {
+            if ($role->id == 2)//for admin role id is 2
+            {
+                return $next($request);
+            }
         }
         return response()->json([
             'success' => false,

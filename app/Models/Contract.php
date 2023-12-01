@@ -9,5 +9,4 @@ class Contract extends Model
 {
     use HasFactory;
     protected $guarded = [];
-
 }

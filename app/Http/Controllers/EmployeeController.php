@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\EmployeeService;
 use App\Http\Requests\EmployeeStoreRequest;
+use App\Http\Requests\UserStatusRequest;
 use App\Models\User;
 
 
@@ -102,7 +103,7 @@ class EmployeeController extends Controller
     }
 
      /**
-     * Get employee details.
+     * Delete employee.
      */
     public function destroy($id){
         if($id){
@@ -125,4 +126,30 @@ class EmployeeController extends Controller
             ],404);
         }
     }
+
+     /**
+     * update user status.
+     */
+    public function status(UserStatusRequest $request,$id){
+        if($id){
+            $response = (new EmployeeService())->status($request,$id);
+            if($response){
+                return response()->json([
+                    'success' => true,
+                    'message' => "Employee status updated",
+                ],200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message'=>"Employee not valid"
+                ],404);
+            }
+        } else {
+            return response()->json([
+                'success' => false,
+                'message'=>"Employee not valid"
+            ],404);
+        }
+    }
+
 }

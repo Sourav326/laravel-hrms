@@ -14,7 +14,8 @@ class EmployeeService {
      * @return array
      */
     public function index(){
-        $employees = Employee::where('created_by',auth('sanctum')->id())->get();
+        $company_id = auth('sanctum')->user()->company_id;
+        $employees = Employee::where('company_id',$company_id)->get();
         return $employees;
     }
 
@@ -29,19 +30,21 @@ class EmployeeService {
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->role  = 'user';
+        $user->company_id = $request->company_id;
         $user->password  = bcrypt($request->name);
         if($request->hasFile('profile_image')){
             //helper for uploading file
             $response = uploadImage($request->profile_image,'images/employees');//file to upload, where to upload
+            $user->profile_image = $response;
         }
-        $user->profile_image = $response;
         
         if($user->save()){
+            $user->roles()->attach(3);//for user role id is 3
             
             // create employee data
             $employee = new Employee;
             $employee->user_id = $user->id;
+            $employee->employee_id = "SCR-".$user->id;
             $employee->created_by = auth('sanctum')->id();
             $employee->name = $request->name;
             $employee->email = $request->email;
@@ -55,7 +58,8 @@ class EmployeeService {
             $employee->gender = $request->gender;
             $employee->dob = $request->dob;
             $employee->birth_place = $request->birth_place;
-            $employee->department = $request->department;
+            $employee->department_id = $request->department_id;
+            $employee->company_id = $request->company_id;
             $employee->job_position = $request->job_position;
             $employee->manager = $request->manager;
             $employee->work_email = $request->work_email;
@@ -260,11 +264,6 @@ class EmployeeService {
         }
     }
 
-
-
-
-
-
     /**
      * Destroy a  employee
      *
@@ -278,6 +277,22 @@ class EmployeeService {
         $user->certificates()->delete();
         $user->delete();
         return true;
+        } else{
+            return false;
+        }
+    }
+
+     /**
+     * Destroy a  employee
+     *
+     * @return array
+     */    
+    public function status($request,$id){
+        $user = User::find($id);
+        if($user){
+            $user->status = $request->status;
+            $user->save();
+            return true;
         } else{
             return false;
         }

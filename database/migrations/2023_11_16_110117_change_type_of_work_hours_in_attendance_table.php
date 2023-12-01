@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contracts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('attendances', function (Blueprint $table) {
+            $table->string('work_hours')->nullable()->change();
+            $table->string('total_break_hours')->nullable()->change();
         });
     }
 
@@ -22,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contracts');
+        Schema::table('attendances', function (Blueprint $table) {
+            //
+        });
     }
 };

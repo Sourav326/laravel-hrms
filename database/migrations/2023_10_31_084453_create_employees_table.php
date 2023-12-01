@@ -27,7 +27,6 @@ return new class extends Migration
             $table->enum('gender', ['male','female','other']);
             $table->date('dob');
             $table->string('birth_place');
-            $table->string('department');
             $table->string('job_position');
             $table->string('manager');
             $table->string('work_email');
