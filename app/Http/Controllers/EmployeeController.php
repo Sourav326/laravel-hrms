@@ -14,8 +14,8 @@ class EmployeeController extends Controller
      /**
      * Get all employees list.
      */
-    public function index(){
-        $employees = (new EmployeeService())->index();
+    public function index(Request $request){
+        $employees = (new EmployeeService())->index($request);
         if(count($employees) > 0){
             return response()->json([
                 'success' => true,

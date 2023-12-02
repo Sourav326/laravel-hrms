@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     JobController,
     AnnouncementController,
     OrganizationDocumentController,
-    DeductionController
+    DeductionController,
+    DashboardController
 };
 
 
@@ -42,6 +43,7 @@ Route::controller(AuthController::class)->group(function () {
 
 // If user login
 Route::middleware('ensureUserIsLogin')->group(function () {
+    
 
     //Organization Documents
     Route::controller(OrganizationDocumentController::class)->group(function () {
@@ -59,6 +61,14 @@ Route::middleware('ensureUserIsLogin')->group(function () {
 
     // If admin login
     Route::middleware('ensureIsAdmin')->group(function () {
+
+
+        // For dashboard
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/dashboard','index');
+        });
+
+
         // For employees
         Route::controller(EmployeeController::class)->group(function () {
             Route::get('/employees','index');

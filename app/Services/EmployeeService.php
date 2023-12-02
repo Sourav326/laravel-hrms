@@ -5,6 +5,7 @@ use App\Models\Employee;
 use App\Models\User;
 use App\Models\Document;
 use App\Models\EducationCertificate;
+use Illuminate\Support\Carbon;
 
 class EmployeeService {
 
@@ -13,9 +14,13 @@ class EmployeeService {
      *
      * @return array
      */
-    public function index(){
+    public function index($request){
         $company_id = auth('sanctum')->user()->company_id;
-        $employees = Employee::where('company_id',$company_id)->get();
+        if($request->search_value){
+            $employees = Self::search($request->search_value,$company_id);
+        } else {
+            $employees = Employee::where('company_id',$company_id)->with('user')->with('department')->get();
+        }
         return $employees;
     }
 
@@ -296,5 +301,41 @@ class EmployeeService {
         } else{
             return false;
         }
+    }
+
+
+     /**
+     * Search the employees
+     *
+     * @return array
+     */ 
+    public function search($search_value,$company_id){
+
+        $employees = Employee::where('company_id',$company_id)->where(function($query) use ($search_value) {
+			$query->where('name', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('email','johndoe@example.com')
+                    ->orWhere('employee_id', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('email', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('mobile', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('emergency_mobile', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('work_email', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('manager', 'LIKE', '%' . $search_value . '%');
+        })->with('user')->with('department')->get();
+        return $employees;
+    }
+
+
+     /**
+     * get the employees birthday
+     *
+     * @return array
+     */ 
+    public function birthdays(){
+        $company_id = auth('sanctum')->user()->company_id;
+        $birthdays = Employee::where('company_id',$company_id)
+                        ->whereMonth('dob', Carbon::now()->month)
+                        ->with('user')
+                        ->get();
+        return $birthdays;
     }
 }

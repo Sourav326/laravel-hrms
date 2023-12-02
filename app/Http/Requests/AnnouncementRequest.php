@@ -27,8 +27,6 @@ class AnnouncementRequest extends FormRequest
             'comment' => 'required',
             'is_scheduled' => 'required | in:0,1',
             'status' => 'required | in:0,1',
-            'date' => 'required',
-            'time' => 'required'
         ];
     }
 }
