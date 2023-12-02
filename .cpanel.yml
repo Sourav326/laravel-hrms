@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/hrmsscriza/public_html/
+    - export DEPLOYPATH=/home/hrmsscriza/hrms/
     - /bin/cp * $DEPLOYPATH
